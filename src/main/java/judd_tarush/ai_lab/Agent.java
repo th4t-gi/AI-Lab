@@ -1,7 +1,7 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+* Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+* Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+*/
 package judd_tarush.ai_lab;
 
 import java.awt.Point;
@@ -12,7 +12,7 @@ import java.util.Random;
 /**
  *
  * @author braujudd
- * 
+ *
  */
 public class Agent {
     private String name;
@@ -20,16 +20,28 @@ public class Agent {
     private Point position;
     private int stepsTaken;
     private int reinforcementValue;
-    private Map<String, int> actionCounts;
+    private Map<String, Integer> actionCounts;
+    
+    private String nextMoveName;
+    private Point nextMove;
+   
+    
     private static Random random = new Random(System.currentTimeMillis());
+    
+    static Map<String, Point> movesMap = Map.of("UP", new Point(0,1),
+            "DOWN", new Point(0,-1),
+            "LEFT", new Point(-1,0),
+            "RIGHT", new Point(1,0),
+            "STILL", new Point(0,0));
     
     public Agent(String name, Map<String, Double> strategy, Point initialState) {
         this.name = name;
         this.strategy = sumStrategies(strategy);
-        this.position = new Point (initialState);
+        this.position = new Point(initialState);
         this.stepsTaken = 0;
         this.reinforcementValue = 0;
-        this.actionCounts = new HashMap<>();
+        this.actionCounts = Map.of("UP", 0, "DOWN", 0, "LEFT", 0, "RIGHT", 0, "STILL", 0);
+        this.nextMoveName = "";
     }
     
     private Map<String, Double> sumStrategies(Map<String, Double> input) {
@@ -38,31 +50,51 @@ public class Agent {
         output.put("LEFT", output.get("LEFT") + output.get("DOWN"));
         output.put("RIGHT", output.get("RIGHT") + output.get("LEFT"));
         output.put("STILL", output.get("STILL") + output.get("RIGHT"));
-
+        
         return output;
     }
     
-    public Point selectAction() {
+    public void selectAction() {
         double check = random.nextDouble(1.0);
         
         if (check < this.strategy.get("UP")) {
-            return new Point(0,1);
+            this.nextMoveName = "UP";
         } else if (check < this.strategy.get("DOWN")) {
-            return new Point(0,-1);
+            this.nextMoveName = "DOWN";
         } else if (check < this.strategy.get("LEFT")) {
-            return new Point(-1, 0);
+            this.nextMoveName = "LEFT";
         } else if (check < this.strategy.get("RIGHT")) {
-            return new Point(1,0);
+            this.nextMoveName = "RIGHT";
         } else {
-            return new Point(0,0);
+            this.nextMoveName = "STILL";
         }
+        
+        this.setNextMove();
     }
     
     public Point getNextMove() {
-        Point action = this.selectAction();
-        return new Point(action.x + this.position.x, action.y + this.position.y);
+        return this.nextMove;
     }
-   
+    
+    public void setNextMove() {
+        Point direction = movesMap.get(this.nextMoveName);
+        this.nextMove = new Point(direction.x + this.position.x, direction.y + this.position.y);
+    }
+    
+    public void move(boolean goodMove) {
+        //increment shit
+        this.stepsTaken++;
+        
+        if (goodMove) {
+            // good robot
+            this.actionCounts.put(this.nextMoveName, this.actionCounts.get(this.nextMoveName)+1);
+            this.setPosition(this.nextMove);
+        } else {
+            this.actionCounts.put("STILL", this.actionCounts.get("STILL")+1);
+            this.reinforcementValue--;
+        }
+    }
+    
     
     public String getName() {
         return this.name;
@@ -84,9 +116,11 @@ public class Agent {
         return reinforcementValue;
     }
     
-    public Map<String, int> getActionCounts() {
-        return actionCounts;
+    public void printActionCounts() {
         // Or just print it
+        for(String k : this.actionCounts.keySet()) {
+            System.out.println(k + ": " + this.actionCounts.get(k));
+        }
     }
     
 }
@@ -95,28 +129,28 @@ public class Agent {
 //    private int x;
 //    private int y;
 //    private walls;
-//    
+//
 //    public Coordinate(int x, int y) {
 //        this.x = x;
 //        this.y = y;
 //    }
-//    
+//
 //    public boolean equals(Coordinate point) {
 //        return point.x == this.x && point.y == this.y;
 //    }
-//    
+//
 //    public int getX() {
 //        return this.x;
 //    }
-//    
+//
 //    public int getY() {
 //        return this.y;
 //    }
-//    
+//
 //    public void set(int x, int y) {
 //        this.x += x;
 //        this.y += y;
 //    }
-//    
-//    
+//
+//
 //}
