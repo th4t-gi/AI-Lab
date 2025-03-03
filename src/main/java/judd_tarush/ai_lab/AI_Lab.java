@@ -16,7 +16,6 @@ import java.util.Map;
 public class AI_Lab {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
         
         Point init1 = new Point(0,0);
         Point final1 = new Point(2,2);
@@ -30,6 +29,8 @@ public class AI_Lab {
         Environment env1 = new Environment(3, 3, null, agents, init1, final1);
         
         Experiment exp1 = new Experiment(env1, agents);
+        
+        System.out.println("Conditions init");
         exp1.runEpisode();
         exp1.report();
     }

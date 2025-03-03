@@ -40,18 +40,29 @@ public class Agent {
         this.position = new Point(initialState);
         this.stepsTaken = 0;
         this.reinforcementValue = 0;
-        this.actionCounts = Map.of("UP", 0, "DOWN", 0, "LEFT", 0, "RIGHT", 0, "STILL", 0);
+        this.actionCounts = new HashMap<>(Map.of("UP", 0, "DOWN", 0, "LEFT", 0, "RIGHT", 0, "STILL", 0));
         this.nextMoveName = "";
+        
+        System.out.println(this.getName() + " " + this.strategy);
     }
     
-    private Map<String, Double> sumStrategies(Map<String, Double> input) {
-        Map<String, Double> output = input;
-        output.put("DOWN", output.get("DOWN") + output.get("UP"));
-        output.put("LEFT", output.get("LEFT") + output.get("DOWN"));
-        output.put("RIGHT", output.get("RIGHT") + output.get("LEFT"));
-        output.put("STILL", output.get("STILL") + output.get("RIGHT"));
+    private static Map<String, Double> sumStrategies(Map<String, Double> input) {
         
+        System.out.println(input);
+        Map<String, Double> output = new HashMap<>();
+        
+        output.put("UP", input.get("UP"));
+        output.put("DOWN", input.get("DOWN") + output.get("UP"));
+        output.put("LEFT", input.get("LEFT") + output.get("DOWN"));
+        output.put("RIGHT", input.get("RIGHT") + output.get("LEFT"));
+        output.put("STILL", input.get("STILL") + output.get("RIGHT"));
+
         return output;
+    }
+    
+    public void resetNextMove() {
+        this.nextMove = null;
+        this.nextMoveName = "";
     }
     
     public void selectAction() {

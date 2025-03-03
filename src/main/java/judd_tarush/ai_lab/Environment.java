@@ -40,6 +40,7 @@ public class Environment {
     public void makeMoves() {        
         //get everyones move that they want
         for (Agent a : agents) {
+            
             // Check if each agent is to be run
             if (!a.getPosition().equals(this.finalState)) {
                 // If to be run, get next move
@@ -48,7 +49,10 @@ public class Environment {
         }
         
         for (Agent a : agents) {
+            System.out.println("Agent " + a.getName() + ": " + a.getPosition());
+            System.out.println("Move: " + a.getNextMove());
             // Check if each agent is to be run
+            //BUG: if one agent is in the final square the other cant get to it.
             if (!a.getPosition().equals(this.finalState)) {
                 //checks valid move
                 a.move(isValidMove(a));
@@ -58,6 +62,7 @@ public class Environment {
     
     public boolean isValidMove(Agent agent) {
         Point move = agent.getNextMove();
+//        System.out.println("Move for " + agent.getName() + ": " + move);
         //make sure this agents move are in the bounds
         if (move.x < 0 || move.y < 0 || move.x >= cols || move.y >= rows) {
             return false;

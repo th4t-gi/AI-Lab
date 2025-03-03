@@ -23,6 +23,7 @@ public class Experiment {
     public void runEpisode() {
         // Loop through agents until all at final
         while (!allAtFinalState()) {
+            System.out.println("hi");
             this.env.makeMoves();
         }
         
