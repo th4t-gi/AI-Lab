@@ -49,8 +49,8 @@ public class Environment {
         }
         
         for (Agent a : agents) {
-            System.out.println("Agent " + a.getName() + ": " + a.getPosition());
-            System.out.println("Move: " + a.getNextMove());
+//            System.out.println("Agent " + a.getName() + ": " + a.getPosition());
+//            System.out.println("Move: " + a.getNextMove());
             // Check if each agent is to be run
             //BUG: if one agent is in the final square the other cant get to it.
             if (!a.getPosition().equals(this.finalState)) {
@@ -70,7 +70,7 @@ public class Environment {
         
         //make sure this agent isn't moving anywhere that someone else is
         for (Agent other : this.agents) {
-            if (other.getNextMove().equals(move) && !agent.equals(other)) {
+            if (!move.equals(finalState) && other.getNextMove().equals(move) && !agent.equals(other)) {
                 conflictCount++;
                 return false;
             }
