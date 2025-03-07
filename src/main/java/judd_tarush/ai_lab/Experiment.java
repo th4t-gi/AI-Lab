@@ -5,36 +5,48 @@
 package judd_tarush.ai_lab;
 
 import java.util.List;
-import java.awt.Point;
 
 /**
  *
  * @author braujudd
  */
 public class Experiment {
+    private int experiment;
     private Environment env;
     private List<Agent> agents;
+    private int episodes;
+
     
-    public Experiment(Environment env, List<Agent> agents) {
+    public Experiment(int experiment, Environment env, List<Agent> agents, int episodes) {
+        this.experiment = experiment;
         this.env = env;
         this.agents = agents;
+        this.episodes = episodes;
+    }
+    
+    public void run() {
+        System.out.println("\nExperiment " + this.experiment + ": ");
+        for(int i = 1; i <= this.episodes; i++) {
+            System.out.println("\nEpisode " + i + ":\n");
+            runEpisode();
+            report();
+        }
     }
     
     public void runEpisode() {
+        this.env.reset();
         // Loop through agents until all at final
         while (!allAtFinalState()) {
             this.env.makeMoves();
         }
-        
     }
     
-    public boolean allAtFinalState() {
+    private boolean allAtFinalState() {
         for (Agent a : agents) {
             if (!a.getPosition().equals(this.env.getFinalState())) {
                 return false;
             }
         }
-        
         return true;
     }
     
@@ -54,8 +66,6 @@ public class Experiment {
         
         System.out.println("The average steps taken by our agents is " + (totalSteps/this.agents.size()));
         
-        System.out.println("The number of conflicts by our agents was " + this.env.getConflictCount());
-        
-        
+        System.out.println("The number of conflicts by our agents was " + this.env.getConflictCount());  
     }
 }

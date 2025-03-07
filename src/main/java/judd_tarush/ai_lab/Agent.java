@@ -21,15 +21,15 @@ public class Agent {
     private int stepsTaken;
     private int reinforcementValue;
     private Map<String, Integer> actionCounts;
-    
+    private Point initialState;
     private String nextMoveName;
     private Point nextMove;
    
     
     private static Random random = new Random(System.currentTimeMillis());
     
-    static Map<String, Point> movesMap = Map.of("UP", new Point(0,1),
-            "DOWN", new Point(0,-1),
+    static Map<String, Point> movesMap = Map.of("UP", new Point(0,-1),
+            "DOWN", new Point(0,1),
             "LEFT", new Point(-1,0),
             "RIGHT", new Point(1,0),
             "STILL", new Point(0,0));
@@ -37,13 +37,8 @@ public class Agent {
     public Agent(String name, Map<String, Double> strategy, Point initialState) {
         this.name = name;
         this.strategy = sumStrategies(strategy);
-        this.position = new Point(initialState);
-        this.stepsTaken = 0;
-        this.reinforcementValue = 0;
-        this.actionCounts = new HashMap<>(Map.of("UP", 0, "DOWN", 0, "LEFT", 0, "RIGHT", 0, "STILL", 0));
-        this.nextMoveName = "";
-        
-        System.out.println(this.getName() + " " + this.strategy);
+        this.initialState = initialState;
+        this.reset();
     }
     
     private static Map<String, Double> sumStrategies(Map<String, Double> input) {
@@ -58,6 +53,14 @@ public class Agent {
         output.put("STILL", input.get("STILL") + output.get("RIGHT"));
 
         return output;
+    }
+    
+    public void reset() {
+        this.position = new Point(initialState);
+        this.stepsTaken = 0;
+        this.reinforcementValue = 0;
+        this.actionCounts = new HashMap<>(Map.of("UP", 0, "DOWN", 0, "LEFT", 0, "RIGHT", 0, "STILL", 0));
+        this.nextMoveName = "";
     }
     
     public void resetNextMove() {
@@ -93,7 +96,6 @@ public class Agent {
     }
     
     public void move(boolean goodMove) {
-        //increment shit
         this.stepsTaken++;
         
         if (goodMove) {
@@ -135,33 +137,3 @@ public class Agent {
     }
     
 }
-
-//class Coordinate {
-//    private int x;
-//    private int y;
-//    private walls;
-//
-//    public Coordinate(int x, int y) {
-//        this.x = x;
-//        this.y = y;
-//    }
-//
-//    public boolean equals(Coordinate point) {
-//        return point.x == this.x && point.y == this.y;
-//    }
-//
-//    public int getX() {
-//        return this.x;
-//    }
-//
-//    public int getY() {
-//        return this.y;
-//    }
-//
-//    public void set(int x, int y) {
-//        this.x += x;
-//        this.y += y;
-//    }
-//
-//
-//}

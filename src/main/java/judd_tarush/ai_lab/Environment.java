@@ -12,21 +12,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import javafx.util.Pair;
+
 /**
  *
  * @author braujudd
  */
 public class Environment {
     private int rows, cols;
-    private Map<Point, Double> walls;
+    private Map<Pair<Point, Point>, Wall> walls;
     private List<Agent> agents;
     private Point initialState;
     private Point finalState;
     
     private int conflictCount;
-    private static Random random = new Random(System.currentTimeMillis());
     
-    public Environment(int rows, int cols, Map<Point, Double> walls, List<Agent> agents, Point initialState, Point finalState) {
+    public Environment(int rows, int cols, Map<Pair<Point, Point>, Wall> walls, List<Agent> agents, Point initialState, Point finalState) {
         this.rows = rows;
         this.cols = cols;
         this.walls = walls != null ? walls : new HashMap<>();
@@ -34,10 +35,14 @@ public class Environment {
         this.initialState = new Point (initialState);
         this.finalState = new Point (finalState);
         
-        this.conflictCount = 0;
+        this.reset();
     }
     
-    public void makeMoves() {        
+    public void makeMoves() {   
+        for(Wall wall : this.walls.values()) {
+            wall.checkIfClose();
+        }
+        
         //get everyones move that they want
         for (Agent a : agents) {
             
@@ -49,15 +54,19 @@ public class Environment {
         }
         
         for (Agent a : agents) {
-//            System.out.println("Agent " + a.getName() + ": " + a.getPosition());
-//            System.out.println("Move: " + a.getNextMove());
             // Check if each agent is to be run
-            //BUG: if one agent is in the final square the other cant get to it.
             if (!a.getPosition().equals(this.finalState)) {
                 //checks valid move
                 a.move(isValidMove(a));
             }
         }
+    }
+    
+    public void reset() {
+        for (Agent a : agents) {
+            a.reset();
+        }
+        this.conflictCount = 0;
     }
     
     public boolean isValidMove(Agent agent) {
@@ -77,7 +86,12 @@ public class Environment {
         }
         
         //TODO: Check for walls
-        
+        Wall wallCheck1 = this.walls.get(new Pair(agent.getPosition(), move));
+        Wall wallCheck2 = this.walls.get(new Pair(move, agent.getPosition()));
+        if((wallCheck1 != null && wallCheck1.getClose()) || (wallCheck2 != null && wallCheck2.getClose())) {
+            return false;
+        }
+      
         return true;
     }
     
@@ -93,5 +107,29 @@ public class Environment {
         return conflictCount;
     }
     
+}
+
+class Wall {
+    
+    private boolean close = false;
+    private static Random random = new Random(System.currentTimeMillis());
+    private double wallCloseProb; 
+    
+    public Wall(double prob) {
+        this.wallCloseProb = prob;
+    }
+    
+    public void checkIfClose() {
+        if(wallCloseProb > random.nextDouble()) {
+            this.close = true;
+        }
+        else {
+            this.close = false;
+        }
+    }
+    
+    public boolean getClose() {
+        return this.close;
+    }
 }
 
