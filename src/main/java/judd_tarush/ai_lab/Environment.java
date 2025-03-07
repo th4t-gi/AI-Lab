@@ -70,9 +70,8 @@ public class Environment {
     }
     
     public boolean isValidMove(Agent agent) {
-        Point move = agent.getNextMove();
-//        System.out.println("Move for " + agent.getName() + ": " + move);
         //make sure this agents move are in the bounds
+        Point move = agent.getNextMove();
         if (move.x < 0 || move.y < 0 || move.x >= cols || move.y >= rows) {
             return false;
         }
@@ -85,7 +84,7 @@ public class Environment {
             }
         }
         
-        //TODO: Check for walls
+        //check for walls
         Wall wallCheck1 = this.walls.get(new Pair(agent.getPosition(), move));
         Wall wallCheck2 = this.walls.get(new Pair(move, agent.getPosition()));
         if((wallCheck1 != null && wallCheck1.getClose()) || (wallCheck2 != null && wallCheck2.getClose())) {

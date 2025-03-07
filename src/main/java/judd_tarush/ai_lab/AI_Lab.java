@@ -47,28 +47,45 @@ public class AI_Lab {
         
       
         /* 
-        Agents = 4;
         Agent 1 = ("UP", 0.3, "DOWN", 0.1, "LEFT", 0.2, "RIGHT", 0.1, "STILL", 0.3)
         Agent 2 = ("UP", 0.1, "DOWN", 0.3, "LEFT", 0.1, "RIGHT", 0.3, "STILL", 0.2)
         Agent 3 = ("UP", 0.05, "DOWN", 0.4, "LEFT", 0.05, "RIGHT", 0.4, "STILL", 0.1)
         Agent 4 = ("UP", 0.1, "DOWN", 0.1, "LEFT", 0.1, "RIGHT", 0.1, "STILL", 0.6)
         
-        TODO: ASCII Map of grid
+        Visual representation of Environment where
+        n - Wall with probability n of being closed 
+        I - Initial State
+        T - Terminal State
+               0    1    2    3    4  
+            +----+----+----+----+----+
+         0  |    |    |    |    |    |
+            +----+----+----+----+----+
+         1  |    |    | I  |    |    |
+            +----+----+----+-.2-+----+
+         2  |    1    |    |    |    |
+            +----+----+----+----+----+
+         3  |    |    |    |    |    |
+            +----+-.69+----+----+----+
+         4  |    |    |    |    |    |
+            +----+----+----+----+-.5-+
+         5  |    |    |    |    | T  |
+            +----+----+----+----+----+
         */
         Map<String, Double> strat3 = Map.of("UP", 0.05, "DOWN", 0.4, "LEFT", 0.05, "RIGHT", 0.4, "STILL", 0.1);
         Map<String, Double> strat4 = Map.of("UP", 0.1, "DOWN", 0.1, "LEFT", 0.1, "RIGHT", 0.1, "STILL", 0.6);
-        
-        Agent agent3 = new Agent("Agent1", strat1, new Point(1, 2));
-        Agent agent4 = new Agent("Agent2", strat2, new Point(1, 1));
-        Agent agent5 = new Agent("Agent3", strat3, new Point(1, 0));
-        Agent agent6 = new Agent("Agent4", strat4, new Point(0, 2));
+
+        Point init = new Point(1,2);
+        Agent agent3 = new Agent("Agent1", strat1, init);
+        Agent agent4 = new Agent("Agent2", strat2, init);
+        Agent agent5 = new Agent("Agent3", strat3, init);
+        Agent agent6 = new Agent("Agent4", strat4, init);
         List<Agent> agentsExp4 = Arrays.asList(agent3, agent4, agent5, agent6);
         Map<Pair<Point, Point>, Wall> wallsExp4 = Map.of(new Pair(new Point (2, 0), new Point(2, 1)), new Wall(1), 
         new Pair(new Point(3, 1), new Point(4, 1)), new Wall(0.69),
         new Pair(new Point(1, 3), new Point(2, 3)), new Wall(0.2),
         new Pair(new Point(4, 4), new Point(5, 4)), new Wall(0.5));
         
-        Environment env4 = new Environment(6, 5, wallsExp4, agentsExp4, new Point(1, 2), new Point (4, 5));
+        Environment env4 = new Environment(6, 5, wallsExp4, agentsExp4, init, new Point (4, 5));
         
         Experiment exp4 = new Experiment(4, env4, agentsExp4, episodes);
         exp4.run();
